@@ -8,4 +8,5 @@ export default defineConfig({
   build: {
     outDir: 'build',  // Specify the output directory as 'build' instead of the default 'dist'
   },
+  base: '/github-portfolio/',
 })
