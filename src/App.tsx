@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import Alert from "./components/Alert";
 import Button from "./components/Button";
 import Aura from "./components/Aura";
@@ -40,7 +41,7 @@ function App() {
   ];
 
   return (
-    <div className="app-wrapper">
+    <div className="app-wrapper ${isDarkMode ? 'dark-mode' : ''}`">
       <Nav />
       <div className="content-wrapper">
         <Aura />
