@@ -15,7 +15,7 @@ const Nav = () => {
           <a href="#home">
             <img
               className="navbar-logo"
-              src="/charlene-chenn/assets/logo_black.svg"
+              src="/github-portfolio/assets/logo_black.svg"
               alt="Logo"
             />
           </a>
