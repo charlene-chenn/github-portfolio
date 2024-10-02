@@ -42,7 +42,7 @@ const Nav = () => {
               github.
             </a>
             <a
-              href="src/assets/Chen_Charlene_cv.pdf"
+              href="/github-portfolio/assets/Chen_Charlene_cv.pdf"
               className="px-3 py-2 text-sm font-medium navbar-link"
               target="_blank"
             >
