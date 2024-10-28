@@ -16,7 +16,7 @@ function App() {
     },
     {
       title: "Continuum Robot, 2024",
-      description: "A modularized, multi-purpose continuum robot prototype inspired by applications in minimally-invasive surgeries and space exploration. Full papers and videos will be updated soon.",
+      description: "A modularized, multi-purpose continuum robot prototype inspired by applications in minimally-invasive surgeries and space exploration. Full [paper one](https://drive.google.com/drive/u/0/folders/1PUROwwaexBj3ntzRSLuK6rHk6el2jzEC) and [video](https://drive.google.com/drive/u/0/folders/1PUROwwaexBj3ntzRSLuK6rHk6el2jzEC) will be updated soon.",
       media: "/github-portfolio/assets/continuum.gif",
       tags: ["C", "MATLAB", "Fusion 360", "UltiMaker Cura", "STM-32"]
     },
