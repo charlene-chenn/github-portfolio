@@ -11,31 +11,31 @@ function App() {
     {
       title: "Tomorrow Taiwan, 2023",
       description: "Tomorrow Taiwan is an entrepreneurship competition designed for local Taiwan high school students to gain experience with crafting pitches, as well as delivering concepts of entrepreneurship in simple words to younger students.",
-      media: "/github-portfolio/assets/tmrtaiwan.svg",
+      media: "/assets/tmrtaiwan.svg",
       tags: ["HTML", "CSS","Bootstrap","Javascript"]
     },
     {
       title: "Continuum Robot, 2024",
       description: "A modularized, multi-purpose continuum robot prototype inspired by applications in minimally-invasive surgeries and space exploration. Full [paper one](https://drive.google.com/drive/u/0/folders/1PUROwwaexBj3ntzRSLuK6rHk6el2jzEC) and [video](https://drive.google.com/drive/u/0/folders/1PUROwwaexBj3ntzRSLuK6rHk6el2jzEC) will be updated soon.",
-      media: "/github-portfolio/assets/continuum.gif",
+      media: "/assets/continuum.gif",
       tags: ["C", "MATLAB", "Fusion 360", "UltiMaker Cura", "STM-32"]
     },
     {
       title: "Acoustic Levitation, 2024",
       description: "Touchless manipulation of seeds using phased array transducers to explore applications of acoustic levitation in industry.",
-      media: "/github-portfolio/assets/levitateseeds.gif",
+      media: "/assets/levitateseeds.gif",
       tags: ["C++", "Python", "Spinnaker API", "FLIR Blackfly S"]
     },
     {
       title: "Nexus Labs, 2024",
       description: "An index for neurodegenerative diseases using OpenNeuro EEG database and deep learning methods to explore usage of non-invasive neural data.",
-      media: "/github-portfolio/assets/nexus.svg",
+      media: "/assets/nexus.svg",
       tags: ["Python", "SciPy", "scikit-learn", "Pandas", "NumPy", "Matplotlib"]
     },
     {
       title: "Portfolio, 2024",
       description: "A sandbox to exhibit my past projects and interests in employing artificial intelligence, design, and interfaces.",
-      media: "/github-portfolio/assets/portfolio.png",
+      media: "/assets/portfolio.png",
       tags: ["HTML", "CSS", "ReactJS", "Tailwind"]
     }
   ];
