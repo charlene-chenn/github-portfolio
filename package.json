@@ -1,38 +1,28 @@
 {
-<<<<<<< HEAD
   "homepage": "https://charlene-chenn.github.io/github-portfolio/",
-=======
->>>>>>> 36fecb9 (Update changes)
   "name": "github-portfolio",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-<<<<<<< HEAD
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
-=======
->>>>>>> 36fecb9 (Update changes)
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
   "dependencies": {
-<<<<<<< HEAD
     "bootstrap": "^5.2.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^5.3.0"
-=======
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
->>>>>>> 36fecb9 (Update changes)
   },
   "devDependencies": {
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
     "@vitejs/plugin-react": "^3.1.0",
-<<<<<<< HEAD
     "autoprefixer": "^10.4.20",
     "gh-pages": "^6.1.1",
     "postcss": "^8.4.45",
@@ -41,9 +31,3 @@
     "vite": "^4.1.0"
   }
 }
-=======
-    "typescript": "^4.9.3",
-    "vite": "^4.1.0"
-  }
-}
->>>>>>> 36fecb9 (Update changes)
