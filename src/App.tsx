@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React, { useState } from 'react';
 import Alert from "./components/Alert";
 import Button from "./components/Button";
@@ -103,4 +102,3 @@ function App() {
 }
 
 export default App
->>>>>>> 36fecb9 (Update changes)
