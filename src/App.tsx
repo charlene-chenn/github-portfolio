@@ -6,12 +6,15 @@ import Nav from "./components/Nav";
 import Project from "./components/Project";
 import "./output.css";
 
+import tmrtaiwan.svg from "./assets" as tmrtaiwan;
+
 function App() {
   const projects = [
     {
       title: "Tomorrow Taiwan, 2023",
       description: "Tomorrow Taiwan is an entrepreneurship competition designed for local Taiwan high school students to gain experience with crafting pitches, as well as delivering concepts of entrepreneurship in simple words to younger students.",
-      media: "./assets/tmrtaiwan.svg",
+      /*media: "./assets/tmrtaiwan.svg",*/
+      media: tmrtaiwan;
       tags: ["HTML", "CSS","Bootstrap","Javascript"]
     },
     {
