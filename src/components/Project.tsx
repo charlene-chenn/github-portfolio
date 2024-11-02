@@ -24,7 +24,7 @@ function Project({ title, description, media, tags} : Props) {
     return (
         <div className="project-tiles">
             <div className="project-tile project-icons">
-                <img src={media} alt={title} className="project-image" />
+                <img src={`/project-portfolio${media}`} alt={title} className="project-image" />
                 <div className="project-overlay absolute inset-0 flex opacity-0 hover:opacity-100 font-bold">
                     <h3 className="project-title text-left">{title}</h3>
                     <div className="project-tags flex flex-wrap">
