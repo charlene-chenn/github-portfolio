@@ -12,7 +12,7 @@ function App() {
     {
       title: "Tomorrow Taiwan, 2023",
       description: "Tomorrow Taiwan is an entrepreneurship competition designed for local Taiwan high school students to gain experience with crafting pitches, as well as delivering concepts of entrepreneurship in simple words to younger students.",
-      media: "/github-portfolio/assets/tmrtaiwan.svg",
+      media: `${import.meta.env.BASE_URL}assets/tmrtaiwan.svg`
       tags: ["HTML", "CSS","Bootstrap","Javascript"]
     },
     {
