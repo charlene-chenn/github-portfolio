@@ -1,11 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="500" height="500" viewBox="0 0 500 500">
   <defs>
     <style>
+      @font-face {
+        font-family: 'Pecita';
+        src: url('data:font/opentype;charset=utf-8;base64,pecita-base64.txt') format('opentype');
+      }
       .cls-1 {
         font-size: 625px;
         fill: #fefefe;
         text-anchor: middle;
-        font-family: Pecita;
       }
     </style>
   </defs>
