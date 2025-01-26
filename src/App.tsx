@@ -26,11 +26,13 @@ function App(){
       description:
         <p>
           A modularized, multi-purpose continuum robot prototype inspired by applications in minimally-invasive surgeries and space exploration. Full
-          <a href="https://drive.google.com/drive/folders/1ctAmJ8j__iOsQ_Qg1ByHErjlwyA69-VV?usp=drive_link" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-700"> paper</a> and
-          <a href="https://drive.google.com/drive/folders/1v-818HWXqmz9KSTp4WpOj0xJH9MooVLc?usp=drive_link" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-700"> video</a> can be accessed via links.
+          <a href="https://drive.google.com/drive/folders/1ctAmJ8j__iOsQ_Qg1ByHErjlwyA69-VV?usp=drive_link" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-700"> paper</a>,
+          <a href="https://drive.google.com/drive/folders/1v-818HWXqmz9KSTp4WpOj0xJH9MooVLc?usp=drive_link" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-700"> video</a>, and 
+          <a href="https://github.com/L-Yanc/COMP0207_FinalProject" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-700"> repository </a>
+          can be accessed via links.
         </p>,
       media: "/github-portfolio/assets/continuum.gif",
-      tags: ["C", "MATLAB", "Fusion 360", "UltiMaker Cura", "STM-32"]
+      tags: ["C++", "MATLAB", "Fusion 360", "UltiMaker Cura", "STM-32"]
     },
     {
       title: "Acoustic Levitation, 2024",
