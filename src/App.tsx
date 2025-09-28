@@ -16,6 +16,24 @@ function App(){
   /* Project description */
   const projects = [
     {
+      title: "Protalab, 2025",
+      description: "Protalab is an end-to-end rapid protoyping platform powered by generative AI and agentic design to streamline the design process from ideation to fabrication.",
+      media: "/github-portfolio/assets/protalab.gif",
+      tags: ["Python", "TypeScript", "LangGraph", "Docker", "HTML", "CSS", "ReactJS", "Tailwind", "OpenAI API", "Claude API"]
+    },
+    {
+      title: "Milo Real-Time Personal Translator, 2025",
+      description:
+        <p>
+          A real-time AI translator for phone calls, built with OpenAI’s Realtime API and Twilio. Milo enables live, two-way voice translation between users, preserving tone and flow for natural conversations. Full
+          <a href="https://www.linkedin.com/posts/charlene-chenn_this-past-weekend-at-hacklondon-2025sponsored-activity-7302418834152390657-lpjE?utm_source=share&utm_medium=member_desktop&rcm=ACoAADQWqeMBfKBVmPJYTT8PK0aePRPNUBRWX2M" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-700"> post</a> and
+          <a href="https://github.com/charlene-chenn/hacklondon25" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-700"> repository </a> 
+          can be accessed via links.
+        </p>,
+      media: "/github-portfolio/assets/huhai.jpeg",
+      tags: ["React.js", "Tailwind", "Websockets", "FastAPI", "Telephony", "OpenAI Realtime API"]
+    },
+    {
       title: "Tomorrow Taiwan, 2023",
       description: "Tomorrow Taiwan is an entrepreneurship competition designed for local Taiwan high school students to gain experience with crafting pitches, as well as delivering concepts of entrepreneurship in simple words to younger students.",
       media: "/github-portfolio/assets/tmrtaiwan.svg",
@@ -50,12 +68,6 @@ function App(){
       description: "An index for neurodegenerative diseases using OpenNeuro EEG database and deep learning methods to explore usage of non-invasive neural data.",
       media: "/github-portfolio/assets/nexus.svg",
       tags: ["Python", "SciPy", "scikit-learn", "Pandas", "NumPy", "Matplotlib"]
-    },
-    {
-      title: "Portfolio, 2024",
-      description: "A sandbox to exhibit my past projects and interests in employing artificial intelligence, design, and interfaces.",
-      media: "/github-portfolio/assets/portfolio.png",
-      tags: ["HTML", "CSS", "ReactJS", "Tailwind"]
     }
   ];
 
