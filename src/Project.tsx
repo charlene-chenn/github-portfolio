@@ -143,7 +143,7 @@ function Project({ title, description, media, tags, links} : Props) {
                         </button>
                     </div>
                     <div className={`project-description text-left ${isDescriptionVisible ? 'visible' : ''}`}>
-                        {description}
+                        <div className="project-description-inner">{description}</div>
                     </div>
             
                 </div>

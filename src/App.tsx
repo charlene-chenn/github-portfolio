@@ -129,7 +129,7 @@ function App(){
       tags: ["C++", "Python", "Spinnaker API", "FLIR Blackfly S"]
     },
     {
-      title: "Nexus Labs, 2024",
+      title: "Dementia Detection from Resting-State EEG, 2024",
       categories: ["Research"],
       description: 
       "An index for neurodegenerative diseases using OpenNeuro EEG database and deep learning methods to explore usage of non-invasive neural data.",

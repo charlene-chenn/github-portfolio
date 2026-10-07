@@ -892,17 +892,27 @@ body {
   font-weight: normal;
   font-size: 13px;
   line-height: 1.55;
-  display: none;
+  /* Grows from zero height, so the centred card opens outwards from the middle */
+  display: grid;
+  grid-template-rows: 0fr;
+  margin-top: -10px; /* Cancels the card's gap while closed */
+  opacity: 0;
+  transition: grid-template-rows 0.35s ease, margin-top 0.35s ease, opacity 0.3s ease;
 }
 
-/* Expanded: the whole overlay becomes a scroll area so long text can be read inside the tile */
+.project-description-inner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* Expanded: the description opens and the card scrolls if the text is long */
 .project-description.visible {
-  display: block;
-  animation: descriptionFadeIn 0.3s ease-out;
+  grid-template-rows: 1fr;
+  margin-top: 0;
+  opacity: 1;
 }
 
 .project-overlay.expanded .project-card-inner {
-  justify-content: flex-start;
   overflow-y: auto;
   overscroll-behavior: contain; /* Scrolling inside the tile doesn't scroll the page */
   scrollbar-width: thin;
@@ -922,11 +932,6 @@ body {
 .project-overlay.expanded .project-card-inner::-webkit-scrollbar-thumb {
   background: var(--segment-track);
   border-radius: 999px;
-}
-
-@keyframes descriptionFadeIn {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
 }
 
 /* Row under the divider: link icons on the left, "read more" on the right */
