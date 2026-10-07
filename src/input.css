@@ -1171,12 +1171,35 @@ html {
 .contact-links {
   display: flex;
   gap: 30px;
+  /* Same type as the top nav links (Tailwind text-sm + font-medium) */
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 500;
 }
 
 .contact-link {
   display: inline-flex;
   align-items: center;
   gap: 8px;
+}
+
+/* The link is a flex row (icon + word), so place the hover underline explicitly under the word */
+.contact-link::after {
+  top: auto;
+  bottom: -6px;
+  left: auto;
+  right: 0;
+  margin-top: 0;
+}
+
+.contact-link svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.contact-link:hover::after {
+  width: calc(100% - 22px); /* Skip the icon (14px) and the gap (8px) */
 }
 
 /* Project filter (iOS-style segmented control) */

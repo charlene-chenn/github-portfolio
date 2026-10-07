@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FiFileText, FiGithub, FiLinkedin } from 'react-icons/fi';
+import { FiEdit2, FiGithub, FiLinkedin } from 'react-icons/fi';
 import Nav from "./Nav";
 import Aura from "./Aura";
 import Project from "./Project";
@@ -193,9 +193,9 @@ function App(){
         <section id="contact" className="contact-container">
           <div className="project-big-title">Contact</div>
           <div className="contact-links">
-            <a href="https://github.com/charlene-chenn" className="navbar-link contact-link" target="_blank" rel="noopener noreferrer"><FiGithub aria-hidden="true" />github.</a>
-            <a href="https://www.linkedin.com/in/charlene-chenn" className="navbar-link contact-link" target="_blank" rel="noopener noreferrer"><FiLinkedin aria-hidden="true" />linkedin.</a>
-            <a href="/github-portfolio/assets/Chen_Charlene_cv.pdf" className="navbar-link contact-link" target="_blank" rel="noopener noreferrer"><FiFileText aria-hidden="true" />resume.</a>
+            <a href="https://github.com/charlene-chenn" className="navbar-link contact-link" target="_blank" rel="noopener noreferrer"><FiGithub aria-hidden="true" />github</a>
+            <a href="https://www.linkedin.com/in/charlene-chenn" className="navbar-link contact-link" target="_blank" rel="noopener noreferrer"><FiLinkedin aria-hidden="true" />linkedin</a>
+            <a href="/github-portfolio/assets/Chen_Charlene_cv.pdf" className="navbar-link contact-link" target="_blank" rel="noopener noreferrer"><FiEdit2 aria-hidden="true" />resume</a>
           </div>
         </section>
       </div>
