@@ -54,7 +54,7 @@ function App(){
         { label: "pdf", href: "https://drive.google.com/file/d/1ZCcwA4NeVs4_iUjxgNnwgsqSxtS6EZAX/view?usp=sharing" }
       ],
       media: "",
-      tags: ["Reinforcement learning",  "Multi-agent systems", "Edge computing", "IoT security", "cyber-physical systems", "distributed autonomy", "adversarial training"]
+      tags: ["Reinforcement Learning",  "Multi-Agent Systems", "Edge Computing", "IoT Security", "Cyber-physical Systems", "Adversarial Training"]
     },
     {
       title: "GeoGuessr AI for Image Geolocation, 2025",

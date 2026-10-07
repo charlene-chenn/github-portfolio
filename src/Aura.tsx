@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 const Aura = () => {
     const [textIndex, setTextIndex] = useState(0);
-    const texts = ["machine learning engineer", "robotics & ai researcher", "building symbiotic AI"];
+    const texts = ["machine learning engineer", "robotics & AI researcher", "building symbiotic AI"];
 
     useEffect(() => {
         const interval = setInterval(() => {
