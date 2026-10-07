@@ -38,7 +38,7 @@ html,
   -o-tab-size: 4;
      tab-size: 4;
   /* 3 */
-  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   /* 4 */
   font-feature-settings: normal;
   /* 5 */
@@ -559,6 +559,8 @@ video {
     --inner-size: calc(0.5*var(--circle-size)); /* Responsive inner circle size */
     --circle-color: #fab178; /* Circle color */
     --inner-color: #f5abb8; /* Inner circle color */
+    --segment-track: rgba(118, 118, 128, 0.12);
+    --segment-thumb: white;
 }
 
 /* Global Variables (Dark Mode) */
@@ -568,6 +570,8 @@ video {
     --link-color: white;
     --underline-color: white;
     --shadow-color: rgba(252, 252, 252, 0.3);
+    --segment-track: rgba(118, 118, 128, 0.24);
+    --segment-thumb: #636366;
 }
 
 body {
@@ -626,14 +630,28 @@ body {
     z-index: 1000; /* Ensure navbar is above other content */
 }
 
+/* Soft fade under the navbar so content scrolls out of sight behind it */
+.navbar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: calc(100% + 32px);
+    background: linear-gradient(to bottom, var(--background-color) 55%, transparent);
+    pointer-events: none;
+    z-index: -1;
+}
+
 .navbar-items {
     display: flex;
     gap: 30px; /* Adjust the gap between items */
 }
 
 .navbar-logo{
-    width: 6vw;
-    max-width: 60px;
+    /* Size by height so the 2:1 mark sits in proportion with the nav text at every screen width */
+    height: 22px;
+    width: auto;
     opacity: 0.8;
 }
   
@@ -729,18 +747,21 @@ body {
 
 .pulsating-text {
   position: absolute;
-  color: var(--text-color); /* Adjust text color as needed */
-  font-size: clamp(16px, 4vw, 30px); /* Adjust font size as needed */
-  letter-spacing: 0.05em;
+  color: var(--text-color);
+  font-size: clamp(11px, 1vw, 14px);
+  font-weight: 500;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
   text-align: center;
-  transform: translateY(-150%);
+  transform: translateY(-300%);
   z-index: 1; /* Ensure text is above the circles */
-  opacity: 0.8;
+  opacity: 0.6;
 }
 
 .alternating-text {
   position: absolute;
   color: var(--text-color); /* Adjust text color as needed */
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   font-size: clamp(36px, 5vw, 96px); /* Adjust font size as needed */
   letter-spacing: 0.05em;
   text-align: center;
@@ -785,11 +806,12 @@ body {
 .project-big-title{
   font-weight: bold;
   text-align: center;
-  padding-bottom: 10vh;
+  padding-bottom: 5vh;
   font-size: clamp(24px, 5vw, 48px);
 }
 
 .project-tile {
+  aspect-ratio: 16 / 9; /* Matches most project images, so they fill the tile exactly */
   border-radius: 20px;
   position: relative;
   overflow: hidden;
@@ -802,22 +824,48 @@ body {
 }
 
 .project-image {
-  max-width: auto;
+  width: 100%;
   height: 100%;
+  object-fit: cover; /* Fill the tile edge to edge; only images that aren't 16:9 lose a little at the edges */
+  object-position: center;
   position: relative;
   z-index: 1;
 }
 
+/* Animated GIF laid over its still frame while the tile is in view; fades in once loaded */
+.project-gif {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.project-gif.loaded {
+  opacity: 1;
+}
+
 .project-overlay {
-  background: var(--background-color); /* Dark shade */
+  cursor: pointer; /* The whole card toggles "read more" */
+  background: var(--background-color);
   transition: opacity 0.3s;
   opacity: 0;
   z-index: 2; /* Ensure overlay is above the image */
   display: flex;
+  padding: 16px 20px;
+  overflow: hidden;
+}
+
+/* Card content, clipped inside the padding so nothing ever runs up to the tile's edge */
+.project-card-inner {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
   flex-direction: column;
   align-items: flex-start;
-  justify-content: center; /* Align content to the left */
-  padding-left: 20px; /* Add padding for better alignment */
+  justify-content: safe center; /* Centred, but starts from the top if the content is taller than the card */
+  gap: 10px;
+  overflow: hidden;
 }
 
 .project-title {
@@ -826,72 +874,550 @@ body {
   color: var(--text-color);
   text-align: left;
   font-style: italic;
+  font-size: 14px;
+  line-height: 1.3;
+  flex-shrink: 0;
+  /* Very long titles stop at three lines instead of pushing the card content out */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
 }
 
 .project-description {
   position: relative;
   z-index: 3;
-  color: var(--title-color-light); /* Use light mode title color by default */
-  text-align: left; /* Align text to the left */
-  font-weight: normal; /* Make description normal weight */
-  margin-right: 3vw;
-  font-size: clamp(10px, 0.75vw, 36px);
-  max-height: 0;
-  overflow: hidden;
-  margin-top: -250px;
-  opacity: 0;
-  transition-property: margin-top, opacity;
-  transition-duration: 2s;
+  color: var(--text-color);
+  text-align: left;
+  font-weight: normal;
+  font-size: 13px;
+  line-height: 1.55;
+  display: none;
 }
 
+/* Expanded: the whole overlay becomes a scroll area so long text can be read inside the tile */
 .project-description.visible {
-  max-height: 100px; /* Adjust as needed */
-  padding-top: 10px; /* Add padding for better spacing */
-  padding-bottom: 10px; /* Add padding for better spacing */
-  transition-property: margin-top, opacity;
-  transition-duration: 2s;
+  display: block;
+  animation: descriptionFadeIn 0.3s ease-out;
+}
+
+.project-overlay.expanded .project-card-inner {
+  justify-content: flex-start;
+  overflow-y: auto;
+  overscroll-behavior: contain; /* Scrolling inside the tile doesn't scroll the page */
+  scrollbar-width: thin;
+  scrollbar-color: var(--segment-track) transparent;
+}
+
+/* When expanded the card scrolls, so show the full title */
+.project-overlay.expanded .project-title {
+  display: block;
+  -webkit-line-clamp: unset;
+}
+
+.project-overlay.expanded .project-card-inner::-webkit-scrollbar {
+  width: 6px;
+}
+
+.project-overlay.expanded .project-card-inner::-webkit-scrollbar-thumb {
+  background: var(--segment-track);
+  border-radius: 999px;
+}
+
+@keyframes descriptionFadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Row under the divider: link icons on the left, "read more" on the right */
+.project-footer {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  flex-shrink: 0;
+}
+
+/* Row of link icons under the divider */
+.project-links {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.project-link-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 16px;
+  color: var(--text-color);
+  border: 1px solid var(--segment-track);
+  opacity: 0.75;
+  transition: opacity 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.project-link-icon:hover {
+  opacity: 1;
+  background: var(--text-color);
+  color: var(--background-color);
 }
 
 .read-more-button {
-  color: var(--button-text-color); /* Default button text color */
+  color: var(--text-color);
   border: none;
-  border-radius: 20vw;
   margin-left: auto; /* Align button to the right */
-  margin-right: 3vw;
   cursor: pointer;
   font-weight: normal;
-  font-size: clamp(10px, 0.7vw, 24px);
+  font-size: 12px;
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+.read-more-button:hover {
+  opacity: 1;
 }
 
 .divider {
   width: 100%;
   border: 0;
-  border-top: 1px solid var(--text-color); /* Default light mode color */
-  opacity: 80%;
+  border-top: 1px solid var(--text-color);
+  opacity: 0.3;
+  flex-shrink: 0;
 }
 
 .project-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 5px; /* Space between tags */
-  margin-top: 0.5vw; /* Space above tags */
-  margin-bottom: 0.5vw;
+  gap: 6px;
+  flex-shrink: 0;
 }
 
 .tag {
-  background-color: var(--tag-background-color, #e0e0e0); /* Default tag background color */
-  color: var(--tag-text-color, #333); /* Default tag text color */
-  padding: 0.1vw 0.35vw;
-  border-radius: 5px;
-  font-size: clamp(10px, 0.7vw, 24px); /* Adjust font size as needed */
+  background-color: var(--tag-background-color, #e0e0e0);
+  color: var(--tag-text-color, #333);
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: normal;
 }
 
 .project-tile:hover .project-overlay {
   opacity: 0.9;
 }
 
+/* Wrapper around the tag row; hidden when the collapsed card is too short to fit it */
+.project-tags-wrapper {
+  width: 100%;
+  flex-shrink: 0;
+}
+
+.project-tags-wrapper.collapsed {
+  display: none;
+}
+
+/* Tags kept to one line; extras are summarised as "+N" */
+.tag-row {
+  position: relative;
+  width: 100%;
+  flex-wrap: nowrap;
+  overflow: hidden;
+}
+
+.tag-row .tag {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.tag-more {
+  font-weight: 600;
+}
+
+.tag-more {
+  cursor: default;
+}
+
+/* Hidden tags shown under the "+N" chip */
+.tag-dropdown {
+  position: fixed;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  max-width: 240px;
+  padding: 10px;
+  border-radius: 12px;
+  background: var(--background-color);
+  border: 1px solid var(--segment-track);
+  box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.25);
+  transform: translateX(-50%); /* Centred under the "+N" chip */
+  animation: tagDropdownIn 0.15s ease-out;
+}
+
+.tag-dropdown .tag {
+  white-space: nowrap;
+}
+
+@keyframes tagDropdownIn {
+  from { opacity: 0; transform: translate(-50%, -4px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+.tag-row-measure {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  gap: 6px;
+  visibility: hidden;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+/* Keep the card showing while its tag dropdown is open */
+.project-tile.pinned .project-overlay {
+  opacity: 0.9;
+}
+
+/* Tiles without an image show their text card all the time */
+.project-overlay.always-visible {
+  opacity: 1;
+}
+
+.project-tile.no-media {
+  border: 1px solid var(--segment-track);
+  box-shadow: none;
+}
+
 @media (prefers-color-scheme: dark) {
   .project-title, .project-description, .tag {
     color: var(--title-color-dark); /* Use dark mode title color */
+  }
+}
+
+/* Side menu (rotary dial) */
+html {
+  scroll-behavior: smooth;
+}
+
+.side-menu {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .side-menu {
+    display: block;
+    position: fixed;
+    top: 50%;
+    left: 2.5vw;
+    transform: translateY(-50%);
+    width: 120px;
+    height: 120px;
+    z-index: 1000;
+  }
+
+  /* Clear the dial on the left, mirrored on the right so content stays centred */
+  .content-wrapper {
+    padding-left: calc(2.5vw + 100px);
+    padding-right: calc(2.5vw + 100px);
+  }
+}
+
+/* The dial is a drum seen side-on: labels sit on its surface and tilt away as they leave the centre */
+.side-menu-dial {
+  position: relative;
+  height: 100%;
+  perspective: 300px;
+  transform-style: preserve-3d;
+}
+
+/* Fixed marker showing which label is in the selected slot */
+.side-menu-notch {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 14px;
+  height: 1px;
+  background: var(--underline-color);
+  opacity: 0.7;
+}
+
+.side-menu-link {
+  position: absolute;
+  left: 22px;
+  top: 50%;
+  font-style: italic;
+  color: var(--link-color);
+  white-space: nowrap;
+  transform-origin: left center;
+  backface-visibility: hidden;
+}
+
+.side-menu-link:hover {
+  opacity: 0.9 !important;
+}
+
+/* Contact */
+.contact-container {
+  min-height: 60vh;
+  padding: 5vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.contact-links {
+  display: flex;
+  gap: 30px;
+}
+
+.contact-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Project filter (iOS-style segmented control) */
+.segmented-control {
+  position: relative;
+  display: inline-flex;
+  padding: 2px;
+  border-radius: 9px;
+  background: var(--segment-track);
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.segmented-thumb {
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  border-radius: 7px;
+  background: var(--segment-thumb);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12), 0 3px 1px rgba(0, 0, 0, 0.04);
+  transition: left 0.3s ease, width 0.3s ease;
+}
+
+.segmented-option {
+  position: relative;
+  z-index: 1;
+  padding: 6px 18px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-color);
+  opacity: 0.6;
+  white-space: nowrap;
+  transition: opacity 0.2s ease;
+}
+
+.segmented-option.active {
+  opacity: 1;
+  font-weight: 600;
+}
+
+/* Research list (al-folio style publications, shown when the Research filter is selected) */
+.pubs {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.pub {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 20px;
+  padding: 24px 0;
+  border-bottom: 1px solid var(--segment-track);
+  animation: researchFadeIn 0.4s ease-out both;
+}
+
+.pub:last-child {
+  border-bottom: none;
+}
+
+.pub-badge-column {
+  padding-top: 3px;
+}
+
+/* Venue/type badge, tinted with the aura colours */
+.pub-badge {
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+  padding: 4px 0;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #7a3b12;
+  background: rgba(250, 177, 120, 0.3);
+}
+
+.pub-badge-survey,
+.pub-badge-presentation {
+  color: #8a2c43;
+  background: rgba(245, 171, 184, 0.35);
+}
+
+.pub-badge-project {
+  color: var(--text-color);
+  background: var(--segment-track);
+}
+
+.dark-mode .pub-badge {
+  color: #fab178;
+  background: rgba(250, 177, 120, 0.15);
+}
+
+.dark-mode .pub-badge-survey,
+.dark-mode .pub-badge-presentation {
+  color: #f5abb8;
+  background: rgba(245, 171, 184, 0.15);
+}
+
+.dark-mode .pub-badge-project {
+  color: var(--text-color);
+  background: var(--segment-track);
+}
+
+.pub-title {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.pub-authors {
+  font-size: 14px;
+  margin-top: 4px;
+  opacity: 0.75;
+}
+
+.pub-self {
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.pub-venue {
+  font-size: 14px;
+  margin-top: 2px;
+  opacity: 0.6;
+}
+
+.pub-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.pub-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--text-color);
+  opacity: 0.55;
+  transition: opacity 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.pub-button:hover {
+  opacity: 0.9;
+}
+
+.pub-button.active {
+  opacity: 0.9;
+  background: var(--text-color);
+  color: var(--background-color);
+}
+
+/* Smooth expand: animate the grid row from 0fr to 1fr */
+.pub-abstract {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.35s ease;
+}
+
+.pub-abstract.open {
+  grid-template-rows: 1fr;
+}
+
+.pub-abstract-inner {
+  overflow: hidden;
+}
+
+.pub-abstract-text {
+  margin-top: 14px;
+  padding: 14px 18px;
+  border-left: 2px solid var(--circle-color);
+  border-radius: 0 8px 8px 0;
+  background: var(--segment-track);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.pub-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.pub-tag {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--segment-track);
+  opacity: 0.7;
+}
+
+@media (max-width: 767px) {
+  .pub {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .pub-badge {
+    width: auto;
+    padding: 4px 10px;
+  }
+}
+
+@keyframes researchFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* Filtering: tiles are hidden rather than removed, and fade in when they come back */
+.filter-hidden {
+  display: none;
+}
+
+.project-cell {
+  animation: tileIn 0.35s ease-out;
+}
+
+@keyframes tileIn {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }

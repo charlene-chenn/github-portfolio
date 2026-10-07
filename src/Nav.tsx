@@ -21,14 +21,14 @@ const Nav = () => {
         <button className="dark-mode-toggle text-md px-5" onClick={toggleDarkMode}>
             {darkMode ? <FaSun /> : <FaMoon />}
           </button>
-        <a
+            {/* <a
               href="about.html"
               className="navbar-link"
               aria-current="page"
               target="_blank"
             >
               about.
-            </a>
+            </a> */}
             <a
               href="https://github.com/charlene-chenn"
               className="navbar-link"

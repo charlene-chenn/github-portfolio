@@ -1,0 +1,5 @@
+x, y = 100.0, 200
+print(type(x), type(y))
+
+z = y//x
+print(z, type(z))
