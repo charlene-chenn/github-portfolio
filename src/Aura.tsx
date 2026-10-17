@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 
 const Aura = () => {
     const [textIndex, setTextIndex] = useState(0);
-    const texts = ["machine learning engineer", "robotics & AI researcher", "building symbiotic AI"];
+    // \u00a0 (non-breaking space) keeps "symbiotic AI" together when the line has to wrap
+    const texts = ["machine learning engineer", "robotics & AI researcher", "building symbiotic\u00a0AI"];
 
     useEffect(() => {
         const interval = setInterval(() => {

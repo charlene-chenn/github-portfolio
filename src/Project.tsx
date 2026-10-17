@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import TagRow from './TagRow';
+import ProjectSheet from './ProjectSheet';
 import { linkType } from './linkIcons';
 
 /* Import icons */
@@ -12,11 +13,25 @@ interface Props {
     media: string;
     tags: string[];
     links?: { label: string; href: string }[];
+    credit?: string; // image credit shown at the end of the description, e.g. "© Fauna Robotics"
 }
 
-function Project({ title, description, media, tags, links} : Props) {
+function Project({ title, description, media, tags, links, credit } : Props) {
     const [isDescriptionVisible, setDescriptionVisible] = useState(false);
     const [isTagDropdownOpen, setTagDropdownOpen] = useState(false);
+
+    // On phones and other touch screens hover cards don't work well, so tapping the tile
+    // opens the project in a full-screen sheet instead
+    const touchQuery = "(hover: none), (max-width: 640px)";
+    const [isTouch, setTouch] = useState(() => window.matchMedia(touchQuery).matches);
+    const [isSheetOpen, setSheetOpen] = useState(false);
+
+    useEffect(() => {
+        const query = window.matchMedia(touchQuery);
+        const update = () => setTouch(query.matches);
+        query.addEventListener("change", update);
+        return () => query.removeEventListener("change", update);
+    }, []);
 
     // GIFs show a still frame (<name>-still.jpg next to the GIF) and only load and play
     // while at least half the tile is scrolled into view
@@ -40,30 +55,24 @@ function Project({ title, description, media, tags, links} : Props) {
         setDescriptionVisible(!isDescriptionVisible);
     }
 
-    // If the collapsed card is too short for everything, hide the tag row so the rest keeps its padding
+    // The folded card always shows its tag row. If the card is too short for everything,
+    // the title gives up lines instead (3, then 2, then 1, ending in "…"); opened cards scroll
+    // and show the full title.
     const innerRef = useRef<HTMLDivElement>(null);
-    const tagsRef = useRef<HTMLDivElement>(null);
-    const tagsHeight = useRef(0);
-    const [tagsCollapsed, setTagsCollapsed] = useState(false);
+    const titleRef = useRef<HTMLHeadingElement>(null);
 
     useEffect(() => {
         const inner = innerRef.current;
-        if (!inner) return;
+        const title = titleRef.current;
+        if (!inner || !title) return;
 
         const update = () => {
-            if (isDescriptionVisible) {
-                setTagsCollapsed(false); // expanded cards scroll, so there is always room
-                return;
+            title.style.removeProperty("-webkit-line-clamp");
+            if (isDescriptionVisible) return;
+            for (let lines = 3; lines >= 1; lines--) {
+                title.style.setProperty("-webkit-line-clamp", String(lines));
+                if (inner.scrollHeight <= inner.clientHeight) break;
             }
-            const gap = parseFloat(getComputedStyle(inner).rowGap) || 0;
-            if (tagsRef.current && tagsRef.current.offsetHeight > 0) {
-                tagsHeight.current = tagsRef.current.offsetHeight + gap;
-            }
-            setTagsCollapsed((collapsed) =>
-                collapsed
-                    ? inner.scrollHeight + tagsHeight.current > inner.clientHeight
-                    : inner.scrollHeight > inner.clientHeight
-            );
         };
 
         update();
@@ -82,9 +91,15 @@ function Project({ title, description, media, tags, links} : Props) {
     };
 
     return (
+        <>
         <div
-            className={`project-tile project-icons ${media ? "" : "no-media"} ${isTagDropdownOpen ? "pinned" : ""}`}
+            className={`project-tile project-icons ${media ? "" : "no-media"} ${isTagDropdownOpen ? "pinned" : ""} ${isTouch ? "touch" : ""}`}
             ref={tileRef}
+            onClick={isTouch ? () => setSheetOpen(true) : undefined}
+            role={isTouch ? "button" : undefined}
+            tabIndex={isTouch ? 0 : undefined}
+            aria-label={isTouch ? `Open ${title}` : undefined}
+            onKeyDown={isTouch ? (event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); setSheetOpen(true); } } : undefined}
         >
             {media && <img src={stillImage} alt={title} className="project-image" />}
             {isGif && isInView && (
@@ -102,8 +117,8 @@ function Project({ title, description, media, tags, links} : Props) {
                 className={`project-overlay absolute inset-0 flex opacity-0 hover:opacity-100 font-bold ${isDescriptionVisible ? "expanded" : ""} ${media ? "" : "always-visible"}`}
             >
                 <div ref={innerRef} className="project-card-inner">
-                    <h3 className="project-title text-left">{title}</h3>
-                    <div ref={tagsRef} className={`project-tags-wrapper ${tagsCollapsed ? "collapsed" : ""}`}>
+                    <h3 ref={titleRef} className="project-title text-left">{title}</h3>
+                    <div className="project-tags-wrapper">
                         <TagRow tags={tags} onDropdownChange={setTagDropdownOpen} />
                     </div>
                     <hr className="divider" />
@@ -143,7 +158,10 @@ function Project({ title, description, media, tags, links} : Props) {
                         </button>
                     </div>
                     <div className={`project-description text-left ${isDescriptionVisible ? 'visible' : ''}`}>
-                        <div className="project-description-inner">{description}</div>
+                        <div className="project-description-inner">
+                            {description}
+                            {credit && <p className="project-credit">Image {credit}</p>}
+                        </div>
                     </div>
             
                 </div>
@@ -152,6 +170,21 @@ function Project({ title, description, media, tags, links} : Props) {
             {/* <p className="project-description">Description of Project 1.</p> */}
             {/* <a href="project1.html" className="project-link">Read More</a> */}
         </div>
+        {/* Outside the tile, so taps inside the sheet don't reach the tile and reopen it */}
+        {isSheetOpen && (
+            <ProjectSheet
+                title={title}
+                description={description}
+                // What the tile shows right now: the still frame, or the GIF once it has loaded
+                media={isGif && !isGifLoaded ? stillImage : media}
+                tags={tags}
+                links={links}
+                credit={credit}
+                origin={tileRef.current}
+                onClose={() => setSheetOpen(false)}
+            />
+        )}
+        </>
     );
 };
 

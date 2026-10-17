@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FiEdit2, FiGithub, FiLinkedin } from 'react-icons/fi';
 import Nav from "./Nav";
 import Aura from "./Aura";
@@ -6,6 +6,7 @@ import Project from "./Project";
 import SideMenu from "./SideMenu";
 import SegmentedControl from "./SegmentedControl";
 import ResearchList from "./ResearchList";
+import CurrentlyBuilding from "./CurrentlyBuilding";
 import './input.css';
 
 function App(){
@@ -18,6 +19,49 @@ function App(){
     document.body.classList.toggle("dark-mode", !isDarkMode);
   };
 
+  /* Section transitions: the landing dissolves as you scroll away from it,
+     and section text eases in the first time it comes into view */
+  useEffect(() => {
+    const home = document.getElementById("home");
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      if (!home) return;
+      // 0 at the top of the page, 1 once most of the landing has scrolled away
+      const progress = Math.min(Math.max(window.scrollY / (home.offsetHeight * 0.8), 0), 1);
+      home.style.setProperty("--hero-progress", progress.toFixed(3));
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("in-view");
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { rootMargin: "0px 0px -10% 0px" });
+    document.querySelectorAll(".fade-in").forEach((el) => observer.observe(el));
+
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      cancelAnimationFrame(frame);
+      observer.disconnect();
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, []);
+
+  /* What I'm working on right now: a popup in the corner, or under the Catalogue title on phones (href is optional) */
+  const currentlyBuilding = {
+    label: "Federated VLAs for Continual Learning",
+    href: ""
+  };
+
   /* Project description */
   const projects = [
     {
@@ -27,7 +71,7 @@ function App(){
         "An empirical study of which physical properties survive when the same tactile data is encoded as a tactile image or as a point cloud. For agents exploring open-ended, unstructured environments, touch is how they learn what objects are made of, and the format chosen to encode it decides which of those properties they can perceive at all. Yet that choice is usually inherited from the sensor hardware rather than made deliberately. By rendering the same contact from a uSkin array on a LEAP hand both ways, this work makes the choice measurable, and points to representation design as a lever for physical AI that has to understand unfamiliar materials in the wild.",
       kind: "Paper",
       links: [
-        { label: "pdf", href: "" }
+        { label: "pdf", href: "/github-portfolio/under-review.html" }
       ],
       media: "/github-portfolio/assets/hand.jpg",
       tags: ["Force and Tactile Sensing", "Grasping and Manipulation", "Representation Learning"]
@@ -42,6 +86,7 @@ function App(){
         { label: "video", href: "https://drive.google.com/file/d/1-W8yGM2JjCA-0qqgbhNMY9iav3rIB1vA/view?usp=sharing" }
       ],
       media: "/github-portfolio/assets/sprout.jpg",
+      credit: "© Fauna Robotics",
       tags: ["Robot Learning", "Reinforcement Learning", "World Models"]
     },
     {
@@ -79,6 +124,18 @@ function App(){
       ],
       media: "/github-portfolio/assets/hardwire.jpg",
       tags: ["React", "Three.js", "LLM Agents", "CAD", "Arduino", "ESP32"]
+    },
+    {
+      title: "Distributed Flocking Drone Swarm on FreeRTOS, 2025",
+      categories: ["Robotics", "Software"],
+      description:
+        "A simulated drone swarm in which each ESP32 board is an autonomous agent, running Reynolds flocking (cohesion, separation and alignment) and sharing its state with neighbours over LoRa radio. The real-time firmware, written in C/C++ with ESP-IDF and FreeRTOS, runs four prioritised tasks coordinated with mutexes and queues, and meets every deadline: each 20 ms control cycle finishes in under 0.08 ms. Messages between drones are secured with AES-CMAC and replay protection, and the swarm was tested against five attack types with zero collisions.",
+      kind: "Project",
+      links: [
+        { label: "code", href: "https://github.com/charlene-chenn/distributed-flocking" }
+      ],
+      media: "",
+      tags: ["C/C++", "ESP32", "ESP-IDF", "FreeRTOS", "LoRa", "AES-CMAC", "MQTT"]
     },
     {
       title: "Protalab, 2025",
@@ -149,6 +206,28 @@ function App(){
     }
   ];
 
+  /* Each project tile's id, from its title without the year, e.g. "protalab" */
+  const projectId = (title: string) =>
+    title.replace(/,\s*\d{4}$/, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
+  /* Links in the about text: show every project, then glide to the tile and make it glow briefly */
+  const goToProject = (title: string) => (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    setCategory("All");
+    requestAnimationFrame(() => {
+      const cell = document.getElementById(projectId(title));
+      if (!cell) return;
+      cell.scrollIntoView({ behavior: "smooth", block: "center" });
+      cell.classList.remove("project-highlight");
+      void cell.offsetWidth; // restarts the glow if the same link is clicked twice
+      cell.classList.add("project-highlight");
+    });
+  };
+
+  const projectLink = (title: string, text: string) => (
+    <a href={`#${projectId(title)}`} className="about-link" onClick={goToProject(title)}>{text}</a>
+  );
+
   /* Project filters */
   const categories = ["All", "Research", "Robotics", "Software", "Community"];
   const filteredProjects = category === "All"
@@ -161,11 +240,19 @@ function App(){
       <Nav />
       <SideMenu />
       <div className="content-wrapper">
-        <section id="about" className="w-full">
+        <section id="home" className="w-full hero-dissolve">
           <Aura />
         </section>
-        <section id="projects" className="project-container">
-          <div className="project-big-title">Catalogue</div>
+        <section id="about" className="full-bleed about-panel">
+          <div className="about-container">
+          <p className="about-text fade-in">
+            I'm a final-year MEng student at UCL, working where robotics meets AI. I'm most interested in how embodied agents come to understand the physical world, through {projectLink("Curiosity-Driven Self-Touch Learning in Embodied Agents, 2026", "curiosity")}, {projectLink("Lost in Encoding: Comparing Property Retention in Tactile Representations Formats, 2026", "rich sensing")} and {projectLink("GeoGuessr AI for Image Geolocation, 2025", "spatial reasoning")}. Altogether, building AI that works alongside people rather than in place of them. Outside research, I like to innovate traditional solutions with new ideas, from {projectLink("Real-Time Personal Translator, 2025", "real-time translators")} to tools for {projectLink("Hardwire, 2026", "physical design")}.
+          </p>
+          </div>
+        </section>
+        <section id="projects" className="project-container full-bleed">
+          <div className="project-big-title fade-in">Catalogue</div>
+          <CurrentlyBuilding label={currentlyBuilding.label} href={currentlyBuilding.href} inline />
           <div className="flex justify-center pb-10">
             <SegmentedControl options={categories} value={category} onChange={setCategory} />
           </div>
@@ -173,10 +260,11 @@ function App(){
           <div className={category === "Research" ? "" : "filter-hidden"}>
             <ResearchList projects={projects.filter((project) => project.categories.includes("Research"))} />
           </div>
-          <div className={`grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10 ${category === "Research" ? "filter-hidden" : ""}`}>
+          <div className={`grid grid-cols-1 lg:grid-cols-2 gap-10 ${category === "Research" ? "filter-hidden" : ""}`}>
             {projects.map((project) => (
               <div
                 key={project.title}
+                id={projectId(project.title)}
                 className={`project-cell ${filteredProjects.includes(project) ? "" : "filter-hidden"}`}
               >
                 <Project
@@ -185,13 +273,14 @@ function App(){
                   media={project.media}
                   tags={project.tags}
                   links={project.links}
+                  credit={project.credit}
                 />
               </div>
             ))}
           </div>
         </section>
-        <section id="contact" className="contact-container">
-          <div className="project-big-title">Contact</div>
+        <section id="contact" className="contact-container full-bleed">
+          <div className="project-big-title fade-in">Contact</div>
           <div className="contact-links">
             <a href="https://github.com/charlene-chenn" className="navbar-link contact-link" target="_blank" rel="noopener noreferrer"><FiGithub aria-hidden="true" />github</a>
             <a href="https://www.linkedin.com/in/charlene-chenn" className="navbar-link contact-link" target="_blank" rel="noopener noreferrer"><FiLinkedin aria-hidden="true" />linkedin</a>
@@ -199,6 +288,8 @@ function App(){
           </div>
         </section>
       </div>
+      <div className="bottom-blur" aria-hidden="true" />
+      <CurrentlyBuilding label={currentlyBuilding.label} href={currentlyBuilding.href} />
     </div>
   )
 }

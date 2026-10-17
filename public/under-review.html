@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<!-- Placeholder for papers that are still under review; linked from their "pdf" icon in App.tsx -->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/github-portfolio/assets/logo_black.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300&display=swap" rel="stylesheet" />
+    <title>Under Review | Charlene Chen</title>
+    <style>
+      :root {
+        --background-color: white;
+        --text-color: black;
+        --circle-color: #fab178;
+        --inner-color: #f5abb8;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --background-color: black;
+          --text-color: white;
+        }
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+      }
+
+      body {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px 16px;
+        background: var(--background-color);
+        color: var(--text-color);
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        text-align: center;
+      }
+
+      /* The same soft orange and pink glow as the portfolio's landing page */
+      .glow {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        width: min(70vw, 420px);
+        aspect-ratio: 1;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+        background:
+          radial-gradient(circle, var(--inner-color) 15%, transparent 45%),
+          radial-gradient(circle, var(--circle-color) 30%, transparent 70%);
+        filter: blur(24px);
+        opacity: 0.55;
+        z-index: -1;
+        animation: breathe 7s ease-in-out infinite;
+      }
+
+      @keyframes breathe {
+        50% { transform: translate(-50%, -50%) scale(1.08); }
+      }
+
+      p {
+        font-family: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-weight: 300;
+        font-size: clamp(16px, 1.6vw, 19px);
+        line-height: 1.6;
+      }
+
+      a {
+        display: inline-block;
+        margin-top: 40px;
+        color: inherit;
+        font-size: 14px;
+        text-decoration: underline;
+        text-decoration-color: #ee8d55;
+        text-decoration-thickness: 1.5px;
+        text-underline-offset: 4px;
+      }
+
+      a:hover {
+        text-decoration-color: currentColor;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .glow {
+          animation: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="glow" aria-hidden="true"></div>
+    <main>
+      <p>This paper is currently under review.<br />It will be made available on arXiv soon.</p>
+      <a href="/github-portfolio/">← back to portfolio</a>
+    </main>
+  </body>
+</html>
